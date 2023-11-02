@@ -43,8 +43,9 @@ public:
       //ptShip.setPixelsX(ptUpperRight.getPixelsX() * random(-0.5, 0.5));
       //ptShip.setPixelsY(ptUpperRight.getPixelsY() * random(-0.5, 0.5));
 
-      ptGPS.setMetersX(-42164000);
-      ptGPS.setMetersY(-1);
+      ptGPS.setMetersX(0.0);
+      ptGPS.setMetersY(42164000.0);
+      vGPS.setDxDy(3100.0 * 1, 0.0);
 
       ptStar.setPixelsX(ptUpperRight.getPixelsX() * random(-0.5, 0.5));
       ptStar.setPixelsY(ptUpperRight.getPixelsY() * random(-0.5, 0.5));
@@ -63,14 +64,12 @@ public:
    Position ptStar;
    Position ptUpperRight;
 
-   Physics physics;
+   Velocity vGPS;
 
    unsigned char phaseStar;
 
    double angleShip;
    double angleEarth;
-   double dx = 0;
-   double dy = 3100 * 1.25;
 };
 
 /*************************************
@@ -90,50 +89,26 @@ void callBack(const Interface* pUI, void* p)
    // accept input
    //
 
-   // move by a little
-   if (pUI->isUp())
-      pDemo->ptShip.addPixelsY(1.0);
-   if (pUI->isDown())
-      pDemo->ptShip.addPixelsY(-1.0);
-   if (pUI->isLeft())
-      pDemo->ptShip.addPixelsX(-1.0);
-   if (pUI->isRight())
-      pDemo->ptShip.addPixelsX(1.0);
-
 
    //
    // perform all the game logic
    //
 
-   // Update position and velocity of GPS satellite
-   //double td = pDemo->physics.timeDilation(24, 60);
-   //double timePerFrame = pDemo->physics.timePerFrame(td, 30);
-   //double g = pDemo->physics.gravityAtAltitude(-9.80665, 6378000, pDemo->ptGPS.getMetersY() - 6378000); // Gravity at altitude
-   //double angle = pDemo->physics.directionOfGravity(0, 0, pDemo->ptGPS.getMetersX(), pDemo->ptGPS.getMetersY()); // Direction of gravity
-   //double ddx = pDemo->physics.horizontalAcceleration(g, angle); // Horizontal component of acceleration
-   //double ddy = pDemo->physics.verticalAcceleration(g, angle); // Vertical component of acceleration
-   //pDemo->dx = pDemo->physics.velocityWithConstantAcceleration(pDemo->dx, ddx, timePerFrame); // Horizontal velocity with constant acceleration
-   //pDemo->dy = pDemo->physics.velocityWithConstantAcceleration(pDemo->dy, ddy, timePerFrame); // Vertical velocity with constant acceleration
-   //pDemo->ptGPS.setMetersX(pDemo->physics.calculatePosition(pDemo->ptGPS.getMetersX(), pDemo->dx, ddx, timePerFrame)); // Horizontal distance with constant acceleration
-   //pDemo->ptGPS.setMetersY(pDemo->physics.calculatePosition(pDemo->ptGPS.getMetersY(), pDemo->dy, ddy, timePerFrame)); // Vertical distance with constant acceleration
-   // Update position and velocity of GPS satellite
+   double frameRate = 30.0;
+   double hoursPerDay = 24.0;
+   double minutesPerHour = 60.0;
+   double secondsPerMinute = 60.0;
+   double secondsPerDay = hoursPerDay * minutesPerHour * secondsPerMinute;
+   double dilation = hoursPerDay;
+   double t = dilation / frameRate * 100;
+   Acceleration aGravity = getGravity(pDemo->ptGPS);
+   updatePosition(pDemo->ptGPS, pDemo->vGPS, aGravity, t);
+   updateVelocity(pDemo->vGPS, aGravity, t);
 
-   double td = 24 * 60;
-   double timePerFrame = pDemo->physics.timePerFrame(td, 30);
-   double heightAboveEarth = pDemo->physics.heightAboveEarth(pDemo->ptGPS.getMetersX(), pDemo->ptGPS.getMetersY(), 6378000);
-   double g = pDemo->physics.gravityAtAltitude(-9.80665, 6378000, heightAboveEarth); // Gravity at altitude
-   double angle = pDemo->physics.directionOfGravity(0, 0, pDemo->ptGPS.getMetersX(), pDemo->ptGPS.getMetersY()); // Direction of gravity
-   double ddx = pDemo->physics.horizontalAcceleration(g, angle); // Horizontal component of acceleration
-   double ddy = pDemo->physics.verticalAcceleration(g, angle); // Vertical component of acceleration
-   pDemo->dx = pDemo->physics.horizontalVelocity(pDemo->dx, ddx, timePerFrame); // Horizontal velocity with constant acceleration
-   pDemo->dy = pDemo->physics.horizontalVelocity(pDemo->dy, ddy, timePerFrame); // Vertical velocity with constant acceleration
-   pDemo->ptGPS.setMetersX(pDemo->physics.calculatePosition(pDemo->ptGPS.getMetersX(), pDemo->dx, ddx, timePerFrame)); // Horizontal distance with constant acceleration
-   pDemo->ptGPS.setMetersY(pDemo->physics.calculatePosition(pDemo->ptGPS.getMetersY(), pDemo->dy, ddy, timePerFrame)); // Vertical distance with constant acceleration
+   double radiansInADay = 3.14159 * 2.0;
+   double radiansPerFrame = (radiansInADay / frameRate) * (dilation / secondsPerDay);
+   pDemo->angleEarth += radiansPerFrame;
 
-
-   // rotate the earth
-   pDemo->angleEarth += 0.01;
-   pDemo->angleShip += 0.02;
    pDemo->phaseStar++;
 
    //
@@ -152,18 +127,18 @@ void callBack(const Interface* pUI, void* p)
    gout.drawGPS       (pDemo->ptGPS,        pDemo->angleShip);
 
    // draw parts
-   pt.setPixelsX(pDemo->ptCrewDragon.getPixelsX() + 20);
-   pt.setPixelsY(pDemo->ptCrewDragon.getPixelsY() + 20);
-   gout.drawCrewDragonRight(pt, pDemo->angleShip); // notice only two parameters are set
-   pt.setPixelsX(pDemo->ptHubble.getPixelsX() + 20);
-   pt.setPixelsY(pDemo->ptHubble.getPixelsY() + 20);
-   gout.drawHubbleLeft(pt, pDemo->angleShip);      // notice only two parameters are set
-   pt.setPixelsX(pDemo->ptGPS.getPixelsX() + 20);
-   pt.setPixelsY(pDemo->ptGPS.getPixelsY() + 20);
-   gout.drawGPSCenter(pt, pDemo->angleShip);       // notice only two parameters are set
-   pt.setPixelsX(pDemo->ptStarlink.getPixelsX() + 20);
-   pt.setPixelsY(pDemo->ptStarlink.getPixelsY() + 20);
-   gout.drawStarlinkArray(pt, pDemo->angleShip);   // notice only two parameters are set
+   //pt.setPixelsX(pDemo->ptCrewDragon.getPixelsX() + 20);
+   //pt.setPixelsY(pDemo->ptCrewDragon.getPixelsY() + 20);
+   //gout.drawCrewDragonRight(pt, pDemo->angleShip); // notice only two parameters are set
+   //pt.setPixelsX(pDemo->ptHubble.getPixelsX() + 20);
+   //pt.setPixelsY(pDemo->ptHubble.getPixelsY() + 20);
+   //gout.drawHubbleLeft(pt, pDemo->angleShip);      // notice only two parameters are set
+   //pt.setPixelsX(pDemo->ptGPS.getPixelsX() + 20);
+   //pt.setPixelsY(pDemo->ptGPS.getPixelsY() + 20);
+   //gout.drawGPSCenter(pt, pDemo->angleShip);       // notice only two parameters are set
+   //pt.setPixelsX(pDemo->ptStarlink.getPixelsX() + 20);
+   //pt.setPixelsY(pDemo->ptStarlink.getPixelsY() + 20);
+   //gout.drawStarlinkArray(pt, pDemo->angleShip);   // notice only two parameters are set
 
    // draw fragments
    pt.setPixelsX(pDemo->ptSputnik.getPixelsX() + 20);

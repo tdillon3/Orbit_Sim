@@ -3,44 +3,28 @@
  *    Physics : A class used to represent various physics calculations
  * Summary:
  *    Contains methods for various physics-related calculations for a
- *    simulated environment, such as time dilation, rotation, gravity, etc.
+ *    simulated environment
  ************************************************************************/
 
 #pragma once
 #include <cmath> // For math operations
+#include "position.h" // For position class
+#include "velocity.h"  // For velocity class
 
- // Constant for PI
+// Constant for PI
 const double PI = 3.14159265358979323846;
 
-class Physics
-{
-public:
-    Physics();  // default constructor if needed
+// Get gravity at given point
+Acceleration getGravity(const Position& posElement);
 
-    // Time-related calculations
-    double timeDilation(int hoursDay, int minutesHour);
-    double timePerFrame(double td, int frameRate);
-    double rotationSpeed(int frameRate, double td, int secondsDay);
+// Update the current velocity
+Velocity updateVelocity(Velocity& velocity, const Acceleration& acc, double t);
 
-    // Gravity-related calculations
-    double gravityAtAltitude(double g, double r, double h);
-    double heightAboveEarth(double x, double y, double r);
-    double directionOfGravity(double xe, double ye, double xs, double ys);
-    double horizontalAcceleration(double a, double angle);
-    double verticalAcceleration(double a, double angle);
+// update position
+Position updatePosition(Position& pos, const Velocity& vel, const Acceleration& acc, double time);
 
-    // Motion calculations based on Newton's laws
-    double calculatePositionWithConstantVelocity(double s0, double v, double t);
-    double horizontalPositionConstantVelocity(double x0, double dx, double t);
-    double verticalPositionConstantVelocity(double y0, double dy, double t);
-    double calculatePosition(double s0, double v, double a, double t);
-    double velocityWithConstantAcceleration(double v0, double a, double t);
-    double horizontalDistance(double x0, double dx, double ddx, double t);
-    double horizontalVelocity(double dx0, double ddx, double t);
 
-private:
-    // Helper method to calculate the power of values
-    double pow2(double value);
+// Helper method to calculate the power of values
+double pow2(double value);
 
-    // Add any other private methods or member variables as needed
-};
+
