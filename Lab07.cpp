@@ -43,8 +43,8 @@ public:
       //ptShip.setPixelsX(ptUpperRight.getPixelsX() * random(-0.5, 0.5));
       //ptShip.setPixelsY(ptUpperRight.getPixelsY() * random(-0.5, 0.5));
 
-      ptGPS.setMetersX(0);
-      ptGPS.setMetersY(421640000);
+      ptGPS.setMetersX(-42164000);
+      ptGPS.setMetersY(-1);
 
       ptStar.setPixelsX(ptUpperRight.getPixelsX() * random(-0.5, 0.5));
       ptStar.setPixelsY(ptUpperRight.getPixelsY() * random(-0.5, 0.5));
@@ -69,6 +69,8 @@ public:
 
    double angleShip;
    double angleEarth;
+   double dx = 0;
+   double dy = 3100 * 1.25;
 };
 
 /*************************************
@@ -102,6 +104,32 @@ void callBack(const Interface* pUI, void* p)
    //
    // perform all the game logic
    //
+
+   // Update position and velocity of GPS satellite
+   //double td = pDemo->physics.timeDilation(24, 60);
+   //double timePerFrame = pDemo->physics.timePerFrame(td, 30);
+   //double g = pDemo->physics.gravityAtAltitude(-9.80665, 6378000, pDemo->ptGPS.getMetersY() - 6378000); // Gravity at altitude
+   //double angle = pDemo->physics.directionOfGravity(0, 0, pDemo->ptGPS.getMetersX(), pDemo->ptGPS.getMetersY()); // Direction of gravity
+   //double ddx = pDemo->physics.horizontalAcceleration(g, angle); // Horizontal component of acceleration
+   //double ddy = pDemo->physics.verticalAcceleration(g, angle); // Vertical component of acceleration
+   //pDemo->dx = pDemo->physics.velocityWithConstantAcceleration(pDemo->dx, ddx, timePerFrame); // Horizontal velocity with constant acceleration
+   //pDemo->dy = pDemo->physics.velocityWithConstantAcceleration(pDemo->dy, ddy, timePerFrame); // Vertical velocity with constant acceleration
+   //pDemo->ptGPS.setMetersX(pDemo->physics.calculatePosition(pDemo->ptGPS.getMetersX(), pDemo->dx, ddx, timePerFrame)); // Horizontal distance with constant acceleration
+   //pDemo->ptGPS.setMetersY(pDemo->physics.calculatePosition(pDemo->ptGPS.getMetersY(), pDemo->dy, ddy, timePerFrame)); // Vertical distance with constant acceleration
+   // Update position and velocity of GPS satellite
+
+   double td = 24 * 60;
+   double timePerFrame = pDemo->physics.timePerFrame(td, 30);
+   double heightAboveEarth = pDemo->physics.heightAboveEarth(pDemo->ptGPS.getMetersX(), pDemo->ptGPS.getMetersY(), 6378000);
+   double g = pDemo->physics.gravityAtAltitude(-9.80665, 6378000, heightAboveEarth); // Gravity at altitude
+   double angle = pDemo->physics.directionOfGravity(0, 0, pDemo->ptGPS.getMetersX(), pDemo->ptGPS.getMetersY()); // Direction of gravity
+   double ddx = pDemo->physics.horizontalAcceleration(g, angle); // Horizontal component of acceleration
+   double ddy = pDemo->physics.verticalAcceleration(g, angle); // Vertical component of acceleration
+   pDemo->dx = pDemo->physics.horizontalVelocity(pDemo->dx, ddx, timePerFrame); // Horizontal velocity with constant acceleration
+   pDemo->dy = pDemo->physics.horizontalVelocity(pDemo->dy, ddy, timePerFrame); // Vertical velocity with constant acceleration
+   pDemo->ptGPS.setMetersX(pDemo->physics.calculatePosition(pDemo->ptGPS.getMetersX(), pDemo->dx, ddx, timePerFrame)); // Horizontal distance with constant acceleration
+   pDemo->ptGPS.setMetersY(pDemo->physics.calculatePosition(pDemo->ptGPS.getMetersY(), pDemo->dy, ddy, timePerFrame)); // Vertical distance with constant acceleration
+
 
    // rotate the earth
    pDemo->angleEarth += 0.01;
