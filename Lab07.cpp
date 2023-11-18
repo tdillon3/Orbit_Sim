@@ -16,6 +16,9 @@
 #include "uiDraw.h"     // for RANDOM and DRAW*
 #include "position.h"      // for POINT
 #include "physics.h"
+#include "testVelocity.h"
+#include "testDirection.h"
+#include "testPosition.h"
 using namespace std;
 
 /*************************************************************************
@@ -88,6 +91,16 @@ void callBack(const Interface* pUI, void* p)
    //
    // accept input
    //
+
+   // move by a little
+   //if (pUI->isUp())
+   //   pDemo->ptShip.addPixelsY(1.0);
+   //if (pUI->isDown())
+   //   pDemo->ptShip.addPixelsY(-1.0);
+   //if (pUI->isLeft())
+   //   pDemo->ptShip.addPixelsX(-1.0);
+   //if (pUI->isRight())
+   //   pDemo->ptShip.addPixelsX(1.0);
 
 
    //
@@ -172,21 +185,29 @@ int WINAPI wWinMain(
 int main(int argc, char** argv)
 #endif // !_WIN32
 {
-   // Initialize OpenGL
-   Position ptUpperRight;
-   ptUpperRight.setZoom(128000.0 /* 128km equals 1 pixel */);
-   ptUpperRight.setPixelsX(1000.0);
-   ptUpperRight.setPixelsY(1000.0);
-   Interface ui(0, NULL,
-      "Demo",   /* name on the window */
-      ptUpperRight);
+   //// Initialize OpenGL
+   //Position ptUpperRight;
+   //ptUpperRight.setZoom(128000.0 /* 128km equals 1 pixel */);
+   //ptUpperRight.setPixelsX(1000.0);
+   //ptUpperRight.setPixelsY(1000.0);
+   //Interface ui(0, NULL,
+   //   "Demo",   /* name on the window */
+   //   ptUpperRight);
 
-   // Initialize the demo
-   Demo demo(ptUpperRight);
+   //// Initialize the demo
+   //Demo demo(ptUpperRight);
 
-   // set everything into action
-   ui.run(callBack, &demo);
+   //// set everything into action
+   //ui.run(callBack, &demo);
 
+   TestPosition testPosition;
+   testPosition.run();
+
+   TestVelocity testVelocity;
+   testVelocity.run();
+
+   TestDirection testDirection;
+   testDirection.run();
 
    return 0;
 }

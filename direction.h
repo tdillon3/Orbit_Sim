@@ -48,8 +48,9 @@ public:
          double rotations = (double)(int)((M_PI - rhs) / (2.0 * M_PI));
          rhs += rotations * 2.0 * M_PI;
       }
+      radians = rhs;
    }
-   void setDegrees(double rhs) { radians = radiansFromDegrees(rhs); }
+   void setDegrees(double rhs) { setRadians(radiansFromDegrees(rhs)); }
 
    // set based on the components
    void setDxDy(double dx, double dy)
