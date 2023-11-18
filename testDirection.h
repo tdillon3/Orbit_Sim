@@ -3,71 +3,95 @@
 #include <cassert>
 #include "direction.h"
 #pragma once
+
+
+/*******************************
+ * TEST Direction
+ * A friend class for Direction which contains the Direction unit tests
+ ********************************/
 class TestDirection
 {
-public: 
+public:
+    void run()
+    {
+        testDefaultConstructor();
+        testParameterizedConstructor();
+        testCopyConstructor();
+        testSetRadians();
+        testSetDegrees();
 
-   const double EPSILON = 1e-5; 
+        std::cout << "All direction tests passed!" << std::endl;
+    }
 
-   void testDefaultConstructor() {
-      Direction d;
-      assert(fabs(d.getRadians() - 0.0) < EPSILON);
-      assert(fabs(d.getDegrees() - 0.0) < EPSILON);
-   }
+private:
+    const double EPSILON = 1e-5;
 
-   void testParameterizedConstructor() {
-      Direction d(45.0);
-      assert(fabs(d.getRadians() - (M_PI / 4.0)) < EPSILON);
-      assert(fabs(d.getDegrees() - 45.0) < EPSILON);
-   }
+    // utility function for comparing floating point numbers
+    bool closeEnough(double value, double test) const
+    {
+        return fabs(value - test) < EPSILON;
+    }
 
-   void testCopyConstructor() {
-      Direction original(30.0);
-      Direction copy(original);
-      assert(fabs(copy.getRadians() - original.getRadians()) < EPSILON);
-      assert(fabs(copy.getDegrees() - original.getDegrees()) < EPSILON);
-   }
+    void testDefaultConstructor() const
+    {  // setup
+       // exercise
+        Direction d;
+        // verify
+        assert(closeEnough(d.getRadians(), 0.0));
+        assert(closeEnough(d.getDegrees(), 0.0));
+    }  // teardown
 
-   void testSetRadians() {
-      Direction d;
-      d.setRadians(3.0);
-      double x = d.getRadians() - 3.0;
-      assert(fabs(d.getRadians() - 3.0) < EPSILON);
+    void testParameterizedConstructor() const
+    {  // setup
+       // exercise
+        Direction d(45.0);
+        // verify
+        assert(closeEnough(d.getRadians(), M_PI / 4.0));
+        assert(closeEnough(d.getDegrees(), 45.0));
+    }  // teardown
 
-      d.setRadians(2.0 * M_PI + 1.0);
-      assert(fabs(d.getRadians() - 1.0) < EPSILON);
+    void testCopyConstructor() const
+    {  // setup
+        Direction original(30.0);
+        // exercise
+        Direction copy(original);
+        // verify
+        assert(closeEnough(copy.getRadians(), original.getRadians()));
+        assert(closeEnough(copy.getDegrees(), original.getDegrees()));
+    }  // teardown
 
-      d.setRadians(-3.0);
-      assert(fabs(d.getRadians() - (-3.0)) < EPSILON);
+    void testSetRadians() const
+    {  // setup
+        Direction d;
+        // exercise and verify
+        d.setRadians(3.0);
+        assert(closeEnough(d.getRadians(), 3.0));
 
-      d.setRadians(-2.0 * M_PI - 1.0);
-      assert(fabs(d.getRadians() - (-1.0)) < EPSILON);
-   }
+        d.setRadians(2.0 * M_PI + 1.0);
+        assert(closeEnough(d.getRadians(), 1.0));
 
-   void testSetDegrees() {
-      Direction d;
-      d.setDegrees(90.0);
-      assert(fabs(d.getRadians() - (M_PI / 2.0)) < EPSILON);
+        d.setRadians(-3.0);
+        assert(closeEnough(d.getRadians(), -3.0));
 
-      d.setDegrees(180.0);
-      assert(fabs(d.getRadians() + M_PI) < EPSILON);
+        d.setRadians(-2.0 * M_PI - 1.0);
+        assert(closeEnough(d.getRadians(), -1.0));
+    }  // teardown
 
-      d.setDegrees(360.0);
-      assert(fabs(d.getRadians() - 0.0) < EPSILON);
+    void testSetDegrees() const
+    {  // setup
+        Direction d;
+        // exercise and verify
+        d.setDegrees(90.0);
+        assert(closeEnough(d.getRadians(), M_PI / 2.0));
 
-      d.setDegrees(-90.0);
-      assert(fabs(d.getRadians() - (-M_PI / 2.0)) < EPSILON);
-   }
+        d.setDegrees(180.0);
+        assert(closeEnough(d.getRadians(), M_PI));
 
-   void run() {
-      testDefaultConstructor();
-      testParameterizedConstructor();
-      testCopyConstructor();
-      testSetRadians();
-      testSetDegrees();
+        d.setDegrees(360.0);
+        assert(closeEnough(d.getRadians(), 0.0));
 
-      std::cout << "All direction tests passed!" << std::endl;
-   }
-
+        d.setDegrees(-90.0);
+        assert(closeEnough(d.getRadians(), -M_PI / 2.0));
+    }  // teardown
 };
 
