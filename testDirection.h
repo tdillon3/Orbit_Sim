@@ -85,7 +85,7 @@ private:
         assert(closeEnough(d.getRadians(), M_PI / 2.0));
 
         d.setDegrees(180.0);
-        assert(closeEnough(d.getRadians(), M_PI));
+        assert(closeEnough(d.getRadians(), -M_PI));
 
         d.setDegrees(360.0);
         assert(closeEnough(d.getRadians(), 0.0));
