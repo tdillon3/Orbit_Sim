@@ -151,6 +151,7 @@
     <ClInclude Include="direction.h" />
     <ClInclude Include="physics.h" />
     <ClInclude Include="position.h" />
+    <ClInclude Include="projectile.h" />
     <ClInclude Include="test.h" />
     <ClInclude Include="testDirection.h" />
     <ClInclude Include="testPosition.h" />

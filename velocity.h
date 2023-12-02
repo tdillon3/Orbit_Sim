@@ -70,6 +70,8 @@ public:
 
    void setAccDirection(double acc, const Direction& direction);
 
+   void addAcc(const Acceleration& a) { ddx += a.ddx; ddy += a.ddy; }
+
 private:
    double ddx;
    double ddy;
