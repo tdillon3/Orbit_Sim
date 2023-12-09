@@ -194,41 +194,65 @@ void callBack(const Interface* pUI, void* p)
    {
       if (computeDistance(pDemo->ptHubble, (*it)->getPos()) < 200.0)
       {
+         pDemo->ptHubble.setMetersX(-10000000.0); // Move off-screen
+         pDemo->ptHubble.setMetersY(-10000000.0);
+         pDemo->vHubble.setDxDy(0.0, 0.0); // Set velocity to 0
          delete (*it);
          it = pDemo->projectiles.erase(it);
       }
       else if (computeDistance(pDemo->ptSputnik, (*it)->getPos()) < 200.0)
       {
+         pDemo->ptSputnik.setMetersX(10000000.0); // Move off-screen
+         pDemo->ptSputnik.setMetersY(10000000.0);
+         pDemo->vSputnik.setDxDy(0.0, 0.0); // Set velocity to 0
          delete (*it);
          it = pDemo->projectiles.erase(it);
       }
       else if (computeDistance(pDemo->ptStarlink, (*it)->getPos()) < 200.0)
       {
+         pDemo->ptStarlink.setMetersX(10000000.0); // Move off-screen
+         pDemo->ptStarlink.setMetersY(-10000000.0);
+         pDemo->vStarlink.setDxDy(0.0, 0.0); // Set velocity to 0
          delete (*it);
          it = pDemo->projectiles.erase(it);
       }
       else if (computeDistance(pDemo->ptCrewDragon, (*it)->getPos()) < 200.0)
       {
+         pDemo->ptCrewDragon.setMetersX(-10000000.0); // Move off-screen
+         pDemo->ptCrewDragon.setMetersY(10000000.0);
+         pDemo->vCrewDragon.setDxDy(0.0, 0.0); // Set velocity to 0
          delete (*it);
          it = pDemo->projectiles.erase(it);
       }
       else if (computeDistance(pDemo->ptGPS, (*it)->getPos()) < 200.0)
       {
+         pDemo->ptGPS.setMetersX(-20000000.0); // Move off-screen
+         pDemo->ptGPS.setMetersY(-20000000.0);
+         pDemo->vGPS.setDxDy(0.0, 0.0); // Set velocity to 0
          delete (*it);
          it = pDemo->projectiles.erase(it);
       }
       else if (computeDistance(pDemo->ptGPS2, (*it)->getPos()) < 200.0)
       {
+         pDemo->ptGPS2.setMetersX(20000000.0); // Move off-screen
+         pDemo->ptGPS2.setMetersY(20000000.0);
+         pDemo->vGPS2.setDxDy(0.0, 0.0); // Set velocity to 0
          delete (*it);
          it = pDemo->projectiles.erase(it);
       }
       else if (computeDistance(pDemo->ptGPS3, (*it)->getPos()) < 200.0)
       {
+         pDemo->ptGPS3.setMetersX(-20000000.0); // Move off-screen
+         pDemo->ptGPS3.setMetersY(20000000.0);
+         pDemo->vGPS3.setDxDy(0.0, 0.0); // Set velocity to 0
          delete (*it);
          it = pDemo->projectiles.erase(it);
       }
       else if (computeDistance(pDemo->ptGPS4, (*it)->getPos()) < 200.0)
       {
+         pDemo->ptGPS4.setMetersX(20000000.0); // Move off-screen
+         pDemo->ptGPS4.setMetersY(-20000000.0);
+         pDemo->vGPS4.setDxDy(0.0, 0.0); // Set velocity to 0
          delete (*it);
          it = pDemo->projectiles.erase(it);
       }
